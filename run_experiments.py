@@ -21,10 +21,21 @@ RUN_BENCHMARKS_PY = WORKSPACE / "run_benchmarks.py"
 
 
 # List of experiment settings: (base_url, model_name, result_folder_name)
+OR = 'https://openrouter.ai/api/v1'
 EXPERIMENT_SETTINGS = [
-    ('https://openrouter.ai/api/v1', 'google/gemini-3-pro-preview', 'gemini-3-pro-preview'),
-    # Add more experiment configurations here as needed
-    # Example: ('https://openrouter.ai/api/v1', 'another/model', 'another-model'),
+    # Example: uncomment the models you want to run.
+    # (OR, 'meta-llama/llama-4-maverick', 'llama-4-maverick'),
+    # (OR, 'openai/gpt-oss-20b', 'gpt-oss-20b'),
+    # (OR, 'openai/gpt-oss-120b', 'gpt-oss-120b'),
+    # (OR, 'x-ai/grok-4.20', 'grok-4.20'),
+    # (OR, 'qwen/qwen3.5-35b-a3b', 'qwen3.5-35b-a3b'),
+    # (OR, 'minimax/minimax-m2.7', 'minimax-m2.7'),
+    (OR, 'google/gemini-3.1-pro-preview', 'gemini-3.1-pro-preview'),
+    # (OR, 'z-ai/glm-5.1', 'glm-5.1'),
+    # (OR, 'moonshotai/kimi-k2.5', 'kimi-k2.5'),
+    # (OR, 'anthropic/claude-opus-4.6', 'claude-opus-4.6'),
+    # (OR, 'openai/gpt-5.4', 'gpt-5.4'),
+    # (OR, 'qwen/qwen3.5-plus-02-15', 'qwen3.5-plus-02-15'),
 ]
 
 

@@ -55,9 +55,9 @@ def run_single_scenario(label: str, openai_base_url: str, openai_model: str) -> 
     env["NO_TIMESTAMP"] = "true"
     
     # Get API key from environment variable
-    openai_api_key = os.environ.get("OpenRouterAPIKey")
+    openai_api_key = os.environ.get("OPENROUTER_API_KEY") or os.environ.get("OpenRouterAPIKey")
     if not openai_api_key:
-        raise ValueError("OpenRouterAPIKey environment variable is not set")
+        raise ValueError("OPENROUTER_API_KEY environment variable is not set")
     
     # Use the current Python executable to run run.py with the same args
     cmd = [
