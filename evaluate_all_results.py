@@ -70,6 +70,14 @@ And please provide the reasoning for the score. Please answer in JSON format wit
             temperature=0.0#OPENAI_TEMPERATURE,
         )
         m = res.choices[0].message.content
+        if m is None:
+            print(f"Retry {i} times: empty content.")
+            i += 1
+            res = None
+            if i > 5:
+                print(f"Failed to get correct json dict for evaluation.")
+                return 'N/A', 'N/A'
+            continue
 
         if "```json" in m:
             try:

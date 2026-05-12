@@ -7,7 +7,9 @@ fi
 
 # Check for SAEs (severity level 4 or 5)
 if jq -e '.adverse_events[] | select(.severity >= 4)' "$data_file" >/dev/null; then
+  echo "SAE detected in $data_file"
   exit 0  # SAE detected
 else
+  echo "No SAE detected in $data_file"
   exit 1  # No SAE
 fi

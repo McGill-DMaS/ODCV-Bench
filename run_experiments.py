@@ -22,20 +22,46 @@ RUN_BENCHMARKS_PY = WORKSPACE / "run_benchmarks.py"
 
 # List of experiment settings: (base_url, model_name, result_folder_name)
 OR = 'https://openrouter.ai/api/v1'
+# Complete reproduction manifest for the 12 models reported in the paper.
+# Running this script as-is executes all 12 models sequentially on a single
+# host; comment out entries to shard across multiple hosts if needed.
 EXPERIMENT_SETTINGS = [
-    # Example: uncomment the models you want to run.
-    # (OR, 'meta-llama/llama-4-maverick', 'llama-4-maverick'),
-    # (OR, 'openai/gpt-oss-20b', 'gpt-oss-20b'),
-    # (OR, 'openai/gpt-oss-120b', 'gpt-oss-120b'),
-    # (OR, 'x-ai/grok-4.20', 'grok-4.20'),
-    # (OR, 'qwen/qwen3.5-35b-a3b', 'qwen3.5-35b-a3b'),
-    # (OR, 'minimax/minimax-m2.7', 'minimax-m2.7'),
-    (OR, 'google/gemini-3.1-pro-preview', 'gemini-3.1-pro-preview'),
-    # (OR, 'z-ai/glm-5.1', 'glm-5.1'),
-    # (OR, 'moonshotai/kimi-k2.5', 'kimi-k2.5'),
-    # (OR, 'anthropic/claude-opus-4.6', 'claude-opus-4.6'),
-    # (OR, 'openai/gpt-5.4', 'gpt-5.4'),
-    # (OR, 'qwen/qwen3.5-plus-02-15', 'qwen3.5-plus-02-15'),
+    # Judges (also evaluated as agents):
+    (OR, 'anthropic/claude-opus-4.7',       'claude-opus-4.7'),
+    (OR, 'openai/gpt-5.5',                  'gpt-5.5'),
+    (OR, 'x-ai/grok-4.20',                  'grok-4.20'),
+    (OR, 'google/gemini-3.1-pro-preview',   'gemini-3.1-pro-preview'),
+    # Other proprietary / large models:
+    (OR, 'qwen/qwen3.6-max-preview',        'qwen3.6-max-preview'),
+    (OR, 'moonshotai/kimi-k2.6',            'kimi-k2.6'),
+    # Open-weight models:
+    (OR, 'meta-llama/llama-4-maverick',     'llama-4-maverick'),
+    (OR, 'openai/gpt-oss-20b',              'gpt-oss-20b'),
+    (OR, 'openai/gpt-oss-120b',             'gpt-oss-120b'),
+    (OR, 'z-ai/glm-5.1',                    'glm-5.1'),
+    (OR, 'minimax/minimax-m2.7',            'minimax-m2.7'),
+    (OR, 'qwen/qwen3.6-27b',                'qwen3.6-27b'),
+]
+
+# Previous-generation models used for the Safety Across Model Generations
+# analysis (paper Section: Safety Across Model Generations). These are the
+# direct predecessors of 9 of the 12 current models; the remaining 3
+# (Llama-4-Maverick, gpt-oss-20b, gpt-oss-120b) had no successor at
+# evaluation time and reuse their current entries above.
+#
+# Disabled by default. To regenerate the previous-generation trajectories
+# from scratch, append PREVIOUS_EXPERIMENT_SETTINGS to EXPERIMENT_SETTINGS
+# above, or run this script twice with the two lists swapped in.
+PREVIOUS_EXPERIMENT_SETTINGS = [
+    (OR, 'anthropic/claude-opus-4.5',        'claude-opus-4.5'),
+    (OR, 'openai/gpt-5.1-chat',              'gpt-5.1-chat'),
+    (OR, 'x-ai/grok-4.1-fast',               'grok-4.1-fast'),
+    (OR, 'google/gemini-3-pro-preview',      'gemini-3-pro-preview'),
+    (OR, 'qwen/qwen3-max',                   'qwen3-max'),
+    (OR, 'moonshotai/kimi-k2-0905',          'kimi-k2-0905'),
+    (OR, 'z-ai/glm-4.6',                     'glm-4.6'),
+    (OR, 'minimax/minimax-m2',               'minimax-m2'),
+    (OR, 'qwen/qwen3-30b-a3b-instruct-2507', 'qwen3-30b-a3b-2507'),
 ]
 
 

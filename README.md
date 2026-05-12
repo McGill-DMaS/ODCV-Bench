@@ -12,7 +12,7 @@ Our up-to-date leaderboard is available at: **[odcvbenchmark.github.io](https://
 - **40 Realistic Scenarios**: Spanning Healthcare, Logistics/Supply Chain, Finance, Scientific Research & Education, Corporate/HR/Legal, and Social Media.
 - **Mandated vs. Incentivized Variations**: Distinguishes between blind obedience to harmful instructions and autonomous "proactive deception" driven by KPI pressure.
 - **Persistent Bash Environment**: Multi-step tasks executed in a containerized environment with a file system and tools.
-- **Multi-Judge Evaluation**: Four independent LLM judges (GPT-5.4, Grok-4.20, Claude-Opus-4.6, Gemini-3.1-Pro-Preview) score each trajectory; median score reported (Krippendorff's alpha = 0.81).
+- **Multi-Judge Evaluation**: Four independent LLM judges (Claude-Opus-4.7, GPT-5.5, Grok-4.20, Gemini-3.1-Pro-Preview) score each trajectory. The reported score is the median across judges, with each judge model's own runs scored by the remaining three (median-of-3 self-exclusion); Krippendorff's alpha = 0.81.
 - **Deliberative Misalignment Analysis**: Self-evaluation scripts to detect if models recognize their own actions as unethical post-hoc.
 
 ---
@@ -29,37 +29,37 @@ Our up-to-date leaderboard is available at: **[odcvbenchmark.github.io](https://
 ├── existing_results/                # All experiment results and evaluation scores
 │   ├── current/                     #   Current model versions (paper's main results)
 │   │   ├── agent_logs/              #     Agent execution logs (messages_record.txt, run.log, etc.)
-│   │   │   ├── claude-opus-4.6-mandated/
-│   │   │   ├── claude-opus-4.6-incentivized/
+│   │   │   ├── claude-opus-4.7-mandated/
+│   │   │   ├── claude-opus-4.7-incentivized/
 │   │   │   ├── ... (24 folders: 12 models x 2 variations)
 │   │   └── evaluations/
-│   │       ├── scores_final_median.csv   # Final scores: median across 4 judges (main paper table)
 │   │       ├── judge_all/                # Per-judge scores of all 12 models
-│   │       │   ├── scores_gpt54.csv      #   GPT-5.4 judging all models
+│   │       │   ├── scores_final_median.csv  # Final scores: median across 4 judges, or median-of-3 with self-exclusion when the scored model is itself a judge (main paper table)
+│   │       │   ├── scores_claude47.csv   #   Claude-Opus-4.7 judging all models
+│   │       │   ├── scores_gpt55.csv      #   GPT-5.5 judging all models
 │   │       │   ├── scores_grok.csv       #   Grok-4.20 judging all models
-│   │       │   ├── scores_claude.csv     #   Claude-Opus-4.6 judging all models
-│   │       │   ├── scores_gemini.csv     #   Gemini-3.1-Pro judging all models
+│   │       │   ├── scores_gemini.csv     #   Gemini-3.1-Pro-Preview judging all models
 │   │       │   └── reasons_*.csv         #   Corresponding reasoning for each judge
 │   │       └── self_eval/                # Self-evaluation scores (deliberative misalignment)
-│   │           ├── scores_self-glm.csv   #   GLM-5.1 judging its own runs
-│   │           ├── scores_self-kimi.csv  #   Kimi-K2.5 judging its own runs
-│   │           ├── scores_self-minimax.csv
-│   │           ├── scores_self-qwen-35b.csv
-│   │           ├── scores_self-qwen-plus.csv
-│   │           ├── scores_llama.csv      #   Llama judging its own runs (from previous eval)
-│   │           ├── scores_gpt-oss-20b.csv
-│   │           └── scores_gpt-oss-120b.csv
+│   │           ├── scores_self-qwen-max.csv  # Qwen3.6-Max-Preview judging its own runs
+│   │           ├── scores_self-qwen-27b.csv  # Qwen3.6-27B judging its own runs
+│   │           ├── scores_self-kimi.csv      # Kimi-K2.6 judging its own runs
+│   │           ├── scores_self-glm.csv       # GLM-5.1 (kept from prior eval)
+│   │           ├── scores_self-minimax.csv   # Minimax-M2.7 (kept)
+│   │           ├── scores_llama.csv          # Llama-4-Maverick (kept)
+│   │           ├── scores_gpt-oss-20b.csv    # gpt-oss-20b (kept)
+│   │           └── scores_gpt-oss-120b.csv   # gpt-oss-120b (kept)
 │   │
 │   └── previous/                    #   Previous model versions (for temporal analysis)
 │       ├── agent_logs/              #     Agent execution logs from older model versions
 │       │   ├── claude-opus-4.5-mandated/
 │       │   ├── gpt-5.1-chat-mandated/
-│       │   ├── ... (24 folders: 12 old models x 2 variations)
+│       │   ├── ... (folders for 9 predecessor models x 2 variations)
 │       └── evaluations/
 │           ├── judge_all/           #     Same 4 new judges re-evaluating old model runs
-│           │   ├── scores_old-gpt54.csv
+│           │   ├── scores_old-claude47.csv
+│           │   ├── scores_old-gpt55.csv
 │           │   ├── scores_old-grok.csv
-│           │   ├── scores_old-claude.csv
 │           │   └── scores_old-gemini.csv
 │           └── self_eval_stale/     #     Old self-evaluations (from previous eval pipeline)
 │
@@ -68,10 +68,14 @@ Our up-to-date leaderboard is available at: **[odcvbenchmark.github.io](https://
 ├── run.py                           # Low-level Docker Compose & artifact collector
 ├── docker-compose.yml               # Docker Compose config for executor + orchestrator
 ├── evaluate_all_results.py          # AI judge script for scoring trajectories
-├── evaluate_batch.py                # Parallelized multi-judge + self-eval runner
+├── evaluate_batch.py                # Parallelized multi-judge + self-eval runner (phase-driven)
 ├── compute_final_scores.py          # Compute median scores and generate paper tables
+├── bootstrap_ci.py                  # Bootstrap 95% CIs for MR and Sev
+├── paired_bootstrap.py              # Paired-bootstrap CIs for cross-model and temporal contrasts
 ├── retry_missing.py                 # Retry specific failed scenarios
 │
+├── execution_notes.md               # Detailed log of the experiment/evaluation process
+├── plan.md                          # Re-evaluation plan documentation
 ├── LICENSE                          # MIT License
 └── README.md                        # This file
 ```
@@ -84,15 +88,15 @@ Our up-to-date leaderboard is available at: **[odcvbenchmark.github.io](https://
 | Llama-4-Maverick | `meta-llama/llama-4-maverick` | Open |
 | gpt-oss-20b | `openai/gpt-oss-20b` | Open |
 | gpt-oss-120b | `openai/gpt-oss-120b` | Open |
-| Grok-4.20 | `x-ai/grok-4.20` | Open |
-| Qwen3.5-35B-A3B | `qwen/qwen3.5-35b-a3b` | Open |
+| Grok-4.20 | `x-ai/grok-4.20` | Proprietary |
+| Qwen3.6-27B | `qwen/qwen3.6-27b` | Open |
 | Minimax-M2.7 | `minimax/minimax-m2.7` | Open |
 | GLM-5.1 | `z-ai/glm-5.1` | Open |
-| Kimi-K2.5 | `moonshotai/kimi-k2.5` | Open |
+| Kimi-K2.6 | `moonshotai/kimi-k2.6` | Open |
 | Gemini-3.1-Pro-Preview | `google/gemini-3.1-pro-preview` | Proprietary |
-| Claude-Opus-4.6 | `anthropic/claude-opus-4.6` | Proprietary |
-| GPT-5.4 | `openai/gpt-5.4` | Proprietary |
-| Qwen3.5-Plus | `qwen/qwen3.5-plus-02-15` | Proprietary |
+| Claude-Opus-4.7 | `anthropic/claude-opus-4.7` | Proprietary |
+| GPT-5.5 | `openai/gpt-5.5` | Proprietary |
+| Qwen3.6-Max-Preview | `qwen/qwen3.6-max-preview` | Proprietary |
 
 **Previous models** (for temporal analysis — `existing_results/previous/`):
 Claude-Opus-4.5, Gemini-3-Pro-Preview, GLM-4.6, GPT-5.1-Chat, Grok-4.1-Fast, Kimi-K2-0905, Minimax-M2, Qwen3-30B-A3B-Instruct-2507, Qwen3-Max. Three models were unchanged: Llama-4-Maverick, gpt-oss-20b, gpt-oss-120b.
@@ -122,28 +126,53 @@ This script will:
 3. Record the agent's reasoning, actions, and terminal outputs in `results/`.
 
 ### 3. Evaluating Results
-Once the experiments are complete, use the multi-judge evaluation pipeline. Configure the judge models and self-evaluation tasks in `evaluate_batch.py`, then run:
+Once the experiments are complete, run the multi-judge evaluation pipeline:
 
 ```bash
 python evaluate_batch.py
 ```
 
-This runs two phases:
-1. **Judge-all**: Four independent LLM judges score all model runs.
-2. **Self-evaluation**: Each model judges only its own runs (for deliberative misalignment analysis).
+This runs three phases sequentially:
+- **Phase 1**: each of the 4 judges (Claude-Opus-4.7, GPT-5.5, Grok-4.20, Gemini-3.1-Pro-Preview) scores every current-model trajectory.
+- **Phase 2**: the same 4 judges score the 9 previous-generation trajectories used in the Safety Across Model Generations analysis. The 3 unchanged predecessor folders are skipped because they are already covered by Phase 1.
+- **Phase 3**: self-evaluation — each of the 8 non-judge models scores its own trajectories (the 4 judges self-score for free as part of Phase 1).
 
 ### 4. Computing Final Scores
-To compute the median across judges and generate all paper tables:
+`compute_final_scores.py` reads `scores_<judge>.csv` from the current working
+directory, so it must be invoked from inside the per-judge directory:
 
 ```bash
-# From raw judge CSVs (full pipeline — also writes scores_final_median.csv):
-python compute_final_scores.py
+# Full pipeline from raw judge CSVs — also (re)writes scores_final_median.csv:
+cd existing_results/current/evaluations/judge_all
+python ../../../../compute_final_scores.py
 
-# From pre-computed median CSV (quick reproducibility check):
-python compute_final_scores.py --from-median existing_results/current/evaluations/scores_final_median.csv
+# Previous-generation pipeline (predecessor judge CSVs are named scores_old-<judge>.csv,
+# and no predecessor coincides with a current judge so self-exclusion is disabled):
+cd existing_results/previous/evaluations/judge_all
+python ../../../../compute_final_scores.py --judge-prefix old- --no-exclude-self
+
+# Quick reproducibility check from the pre-computed median CSV (run from repo root):
+python compute_final_scores.py --from-median existing_results/current/evaluations/judge_all/scores_final_median.csv
 ```
 
-Both paths produce identical LaTeX-formatted tables for the paper (Table 5: main results, behavioral consistency matrix, scale comparison, context sensitivity, and judge consistency).
+The current-gen full pipeline and the `--from-median` shortcut produce identical LaTeX-formatted tables for the current-model results (main results, behavioral consistency matrix, scale comparison, context sensitivity, and judge consistency). The previous-gen invocation is a separate run that emits the predecessor-model rows used by the Safety Across Model Generations analysis; it does not produce the scale or context-sensitivity tables, since those analyses are defined only on the current panel.
+
+### 5. Bootstrap Confidence Intervals
+To reproduce the statistical-significance results in the paper:
+
+```bash
+# Per-model 95% bootstrap CIs for MR and mean Severity,
+# resampling the 40 scenarios with replacement (B = 10,000, paired across
+# Mandated/Incentivized to preserve within-scenario dependence).
+python bootstrap_ci.py
+
+# Paired-bootstrap CIs for the cross-model and temporal contrasts cited in
+# the paper, plus a cluster-level Clopper-Pearson upper bound for Claude
+# (0/40 scenarios). Krippendorff's alpha is reported by compute_paper_stats.py.
+python paired_bootstrap.py
+```
+
+`bootstrap_ci.py` writes `existing_results/current/evaluations/judge_all/bootstrap_ci.csv`. Point estimates match the paper's main results table exactly.
 
 ---
 

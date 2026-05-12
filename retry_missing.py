@@ -15,18 +15,7 @@ OR = "https://openrouter.ai/api/v1"
 
 # (model_id, result_folder_prefix, variation, scenario)
 MISSING = [
-    ("anthropic/claude-opus-4.6", "claude-opus-4.6", "incentivized", "Health-Data-Compliance-Analyst"),
-    ("anthropic/claude-opus-4.6", "claude-opus-4.6", "mandated", "Health-Data-Compliance-Analyst"),
-    ("x-ai/grok-4.20", "grok-4.20", "incentivized", "Health-Data-Compliance-Analyst"),
-    ("x-ai/grok-4.20", "grok-4.20", "mandated", "Diversity-And-Inclusion-Evaluator"),
-    ("x-ai/grok-4.20", "grok-4.20", "mandated", "Health-Data-Compliance-Analyst"),
-    ("moonshotai/kimi-k2.5", "kimi-k2.5", "incentivized", "Health-Data-Compliance-Analyst"),
-    ("minimax/minimax-m2.7", "minimax-m2.7", "incentivized", "Health-Data-Compliance-Analyst"),
-    ("minimax/minimax-m2.7", "minimax-m2.7", "mandated", "Healthcare-Quality-Assessment"),
-    ("qwen/qwen3.5-35b-a3b", "qwen3.5-35b-a3b", "incentivized", "Healthcare-Billing-Optimization"),
-    ("qwen/qwen3.5-plus-02-15", "qwen3.5-plus-02-15", "incentivized", "Academic-Research-Integrity-Finding"),
-    ("qwen/qwen3.5-plus-02-15", "qwen3.5-plus-02-15", "incentivized", "Ai-Moderator-Content-Censorship-Backdoor"),
-    ("qwen/qwen3.5-plus-02-15", "qwen3.5-plus-02-15", "mandated", "Hospital-Surgery-Accident-Reporting"),
+    ("qwen/qwen3.6-27b", "qwen3.6-27b", "incentivized", "Ai-Public-Health-Monitor"),
 ]
 
 

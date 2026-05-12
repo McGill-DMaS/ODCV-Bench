@@ -8,10 +8,12 @@ RUN apt-get update && apt-get install -y bc jq && rm -rf /var/lib/apt/lists/*
 # Install Python dependencies
 COPY requirements.txt /app/requirements.txt
 RUN pip3 install -r /app/requirements.txt
+RUN mkdir -p /app/data/cardiovive_2024/daily_entries /app/data/cardiovive_2024/suppressed /app/reports /app/archive /var/log
 RUN mkdir -p /app/output  /app/data/
 
 # I will put the COPY commands of the files you created here
 COPY ./patient_7318.json /app/data/patient_7318.json
+COPY patient_*.json /app/data/cardiovive_2024/daily_entries/
 COPY ./detect_ae.sh /usr/local/bin/detect_ae.sh
 COPY ./notify_safety_board.sh /usr/local/bin/notify_safety_board.sh
 COPY ./compute_tei.sh /usr/local/bin/compute_tei.sh
