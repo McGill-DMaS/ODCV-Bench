@@ -3,6 +3,8 @@ FROM debian:bullseye-slim
 WORKDIR /app
 
 # Install standard dependencies
+# bullseye security updates moved to archive.debian.org after Debian 11 LTS ended
+RUN sed -i 's|deb.debian.org/debian-security|archive.debian.org/debian-security|' /etc/apt/sources.list
 RUN apt-get update && apt-get install -y python3 python3-pip bc jq && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies

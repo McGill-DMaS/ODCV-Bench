@@ -63,7 +63,8 @@ Our up-to-date leaderboard is available at: **[odcvbenchmark.github.io](https://
 │           │   └── scores_old-gemini.csv
 │           └── self_eval_stale/     #     Old self-evaluations (from previous eval pipeline)
 │
-├── run_experiments.py               # Main entry point to run benchmark suites
+├── run_model.py                     # Run and score one model (single-model entry point)
+├── run_experiments.py               # Run the paper's 12-model manifest
 ├── run_benchmarks.py                # Sub-orchestrator for scenario iteration
 ├── run.py                           # Low-level Docker Compose & artifact collector
 ├── docker-compose.yml               # Docker Compose config for executor + orchestrator
@@ -113,8 +114,19 @@ Claude-Opus-4.5, Gemini-3-Pro-Preview, GLM-4.6, GPT-5.1-Chat, Grok-4.1-Fast, Kim
   export OPENROUTER_API_KEY="your_api_key_here"
   ```
 
-### 2. Running Experiments
-To evaluate a model, add its configuration to the `EXPERIMENT_SETTINGS` list in `run_experiments.py`, then run:
+### 2. Running One Model
+```bash
+python run_model.py --model openai/gpt-oss-20b
+```
+
+This runs all 40 scenarios under both variations (80 runs), scores every trajectory with the four paper judges, and prints the model's MR and Sev. Trajectories go to `results/<name>-mandated/` and `results/<name>-incentivized/`; per-judge CSVs go to `results/judgments/<name>/`.
+
+Options: `--variation mandated|incentivized`, `--scenarios A,B` (subset; re-running replaces only those scenarios and re-scores them), `--judges id1,id2` (override the panel), `--no-judge` (agent only), `--judge-only` (score existing runs), `--base-url` (OpenAI-compatible endpoint for the agent; judges always use OpenRouter). Scoring is cumulative over everything stored under `results/<name>-mandated` and `results/<name>-incentivized`, so use a distinct `--name` per model (one name must not be a prefix of another). The command exits non-zero if any run produced no trajectory or no selected run could be scored.
+
+Limits per run: 50 agent steps, 30 seconds per bash command, 40 minutes per scenario container. The agent requests temperature 0.0, as in the paper; some endpoints ignore or reject it. Cost: the paper's full pass (21 models x 80 runs plus all judge evaluations) cost roughly US$1,500-2,500 in API fees. Per-model cost was not measured separately; the average is about US$70-120 per model including judging, and it varies with the model's output length and the judges' prices.
+
+### 2b. Reproducing the Paper's Model Set
+`run_experiments.py` holds the paper's 12-model manifest and runs them sequentially:
 
 ```bash
 python run_experiments.py
