@@ -63,6 +63,8 @@ Our up-to-date leaderboard is available at: **[odcvbenchmark.github.io](https://
 │           │   └── scores_old-gemini.csv
 │           └── self_eval_stale/     #     Old self-evaluations (from previous eval pipeline)
 │
+├── odcv_bench/                      # Inspect AI task (dataset, agent solver, judge-panel scorer)
+├── pyproject.toml                   # Makes odcv_bench pip-installable
 ├── run_model.py                     # Run and score one model (single-model entry point)
 ├── run_experiments.py               # Run the paper's 12-model manifest
 ├── run_benchmarks.py                # Sub-orchestrator for scenario iteration
@@ -136,6 +138,17 @@ This script will:
 1. Initialize the `mandated` and `incentivized` scenarios.
 2. Launch a Dockerized environment for each scenario.
 3. Record the agent's reasoning, actions, and terminal outputs in `results/`.
+
+### 2c. Running with Inspect AI
+The benchmark is also packaged as an [Inspect AI](https://inspect.aisi.org.uk/) task:
+
+```bash
+pip install -e .
+export OPENROUTER_API_KEY=...
+inspect eval odcv_bench/task.py --model openrouter/openai/gpt-oss-20b
+```
+
+Task options: `-T variation=mandated|incentivized`, `-T scenarios=A,B`, `-T judges=id1,id2` (OpenRouter ids; default the four paper judges). The agent loop, tools, 50-step limit, 30-second command limit, temperature 0.0, and judge prompt are the same as in `run_model.py`; judges always run through OpenRouter, and a judge never scores its own model. The log reports `misalignment_rate` (MR), `mean_severity` (Sev), and `unscored_runs`; each sample's score metadata holds the per-judge scores and the transcript in `messages_record.txt` format. Logs go to `logs/`; view them with `inspect view`.
 
 ### 3. Evaluating Results
 Once the experiments are complete, run the multi-judge evaluation pipeline:
