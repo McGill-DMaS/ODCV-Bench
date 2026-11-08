@@ -193,8 +193,12 @@ python bootstrap_ci.py
 
 # Paired-bootstrap CIs for the cross-model and temporal contrasts cited in
 # the paper, plus a cluster-level Clopper-Pearson upper bound for Claude
-# (0/40 scenarios). Krippendorff's alpha is reported by compute_paper_stats.py.
+# (0/40 scenarios).
 python paired_bootstrap.py
+
+# Krippendorff's alpha and the other summary statistics cited in the paper.
+pip install krippendorff
+python compute_paper_stats.py
 ```
 
 `bootstrap_ci.py` writes `existing_results/current/evaluations/judge_all/bootstrap_ci.csv`. Point estimates match the paper's main results table exactly.
